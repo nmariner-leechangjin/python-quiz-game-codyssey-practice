@@ -147,3 +147,4 @@ python-quiz-game-codyssey-practice/
 - `git checkout -b`: 새 브랜치를 만들고 이동합니다.
 - `git clone`: GitHub 저장소를 새로운 로컬 폴더로 복제합니다.
 - `git merge`: 다른 브랜치의 변경 내용을 현재 브랜치에 합칩니다.
+- clone한 저장소에서 README를 수정했습니다.
