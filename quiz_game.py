@@ -1,12 +1,19 @@
 import json
+import random
+import shutil
 from pathlib import Path
+
 from quiz import Quiz
+
+
 class QuizGame:
     def __init__(self, quizzes):
-     self.quizzes = quizzes
-     self.best_score = 0
-     self.has_played = False
-     self.state_file = Path("state.json")
+        self.default_quizzes = list(quizzes)
+        self.quizzes = list(quizzes)
+        self.best_score = 0
+        self.has_played = False
+        self.state_file = Path("state.json")
+        self.backup_file = Path("state.backup.json")
 
     def play_quiz(self):
         if not self.quizzes:
@@ -14,8 +21,10 @@ class QuizGame:
             return
 
         score = 0
+        shuffled_quizzes = self.quizzes.copy()
+        random.shuffle(shuffled_quizzes)
 
-        for number, quiz in enumerate(self.quizzes, start=1):
+        for number, quiz in enumerate(shuffled_quizzes, start=1):
             print(f"\n[{number}번 문제]")
             quiz.show()
 
@@ -53,7 +62,6 @@ class QuizGame:
 
         self.save_state()
 
-           
     def add_quiz(self):
         print("\n===== 퀴즈 추가 =====")
 
@@ -86,9 +94,7 @@ class QuizGame:
 
             print("1에서 4 사이의 숫자를 입력하세요.")
 
-        new_quiz = Quiz(question, choices, answer)
-        self.quizzes.append(new_quiz)
-
+        self.quizzes.append(Quiz(question, choices, answer))
         print("퀴즈가 추가되었습니다.")
 
     def list_quizzes(self):
@@ -103,12 +109,15 @@ class QuizGame:
 
     def save_state(self):
         data = {
-    "quizzes": [quiz.to_dict() for quiz in self.quizzes],
-    "best_score": self.best_score,
-    "has_played": self.has_played
-}
+            "quizzes": [quiz.to_dict() for quiz in self.quizzes],
+            "best_score": self.best_score,
+            "has_played": self.has_played
+        }
 
         try:
+            if self.state_file.exists():
+                shutil.copy2(self.state_file, self.backup_file)
+
             with open(self.state_file, "w", encoding="utf-8") as file:
                 json.dump(data, file, ensure_ascii=False, indent=2)
 
@@ -122,26 +131,21 @@ class QuizGame:
             return
 
         try:
-            with open(self.state_file, "r", encoding="utf-8") as file:
-                data = json.load(file)
-
-            self.quizzes = [
-                Quiz.from_dict(item)
-                for item in data["quizzes"]
-            ]
-            self.best_score = data.get("best_score", 0)
-            self.has_played = data.get("has_played", False)
-
+            data = self._read_state(self.state_file)
+            self._apply_state(data)
             print("저장된 데이터를 불러왔습니다.")
 
-        except (OSError, json.JSONDecodeError, KeyError, TypeError):
-            print("state.json이 손상되어 기본 데이터를 사용합니다.")            
+        except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError):
+            print("state.json이 손상되어 기본 데이터를 사용합니다.")
+            self._reset_to_defaults()
 
-            self.has_played = True
-
-       
-
-        self.save_state()
+            if self.backup_file.exists():
+                try:
+                    backup_data = self._read_state(self.backup_file)
+                    self._apply_state(backup_data)
+                    print("백업 데이터를 불러왔습니다.")
+                except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError):
+                    print("백업 데이터도 사용할 수 있어 기본 데이터를 사용합니다.")
 
     def show_score(self):
         print("\n===== 점수 확인 =====")
@@ -150,3 +154,27 @@ class QuizGame:
             print("아직 퀴즈를 풀지 않았습니다.")
         else:
             print(f"최고 점수: {self.best_score}/{len(self.quizzes)}")
+
+    def _read_state(self, path):
+        with open(path, "r", encoding="utf-8") as file:
+            return json.load(file)
+
+    def _apply_state(self, data):
+        quiz_data = data["quizzes"]
+
+        if not isinstance(quiz_data, list):
+            raise TypeError("quizzes는 목록이어야 합니다.")
+
+        loaded_quizzes = [Quiz.from_dict(item) for item in quiz_data]
+
+        if any(len(quiz.choices) != 4 for quiz in loaded_quizzes):
+            raise ValueError("모든 퀴즈의 선택지는 4개여야 합니다.")
+
+        self.quizzes = loaded_quizzes
+        self.best_score = int(data.get("best_score", 0))
+        self.has_played = bool(data.get("has_played", False))
+
+    def _reset_to_defaults(self):
+        self.quizzes = list(self.default_quizzes)
+        self.best_score = 0
+        self.has_played = False
