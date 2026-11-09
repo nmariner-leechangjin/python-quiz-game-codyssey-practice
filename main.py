@@ -1,13 +1,19 @@
+from quiz_data import DEFAULT_QUIZZES
+from quiz_game import QuizGame
+
+
 def show_menu():
-    print("자기주도 동료학습 코디세이 퀴즈 메뉴")
+    print("\n===== 즐거운 코디세이 퀴즈... 짠! =====")
     print("1. 퀴즈 풀기")
     print("2. 퀴즈 추가")
     print("3. 퀴즈 목록")
-    print("4. 퀴즈 확인")
+    print("4. 점수 확인")
     print("5. 종료")
 
 
 def main():
+    quiz_game = QuizGame(DEFAULT_QUIZZES)
+
     while True:
         show_menu()
 
@@ -16,11 +22,19 @@ def main():
 
             if choice == "":
                 print("입력값이 없습니다.")
-            elif not choice.isdigit():
+                continue
+
+            if not choice.isdigit():
                 print("숫자를 입력하세요.")
-            elif int(choice) < 1 or int(choice) > 5:
+                continue
+
+            choice = int(choice)
+
+            if choice < 1 or choice > 5:
                 print("1에서 5 사이의 숫자를 입력하세요.")
-            elif choice == "5":
+            elif choice == 1:
+                quiz_game.play_quiz()
+            elif choice == 5:
                 print("프로그램을 종료합니다.")
                 break
             else:
