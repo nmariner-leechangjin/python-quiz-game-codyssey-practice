@@ -36,6 +36,8 @@ def main():
                 quiz_game.play_quiz()
             elif choice == 2:
                 quiz_game.add_quiz()  
+            elif choice == 3:
+                quiz_game.list_quizzes()
             elif choice == 5:
                 print("프로그램을 종료합니다.")
                 break
