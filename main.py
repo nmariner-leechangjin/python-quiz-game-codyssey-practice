@@ -13,6 +13,7 @@ def show_menu():
 
 def main():
     quiz_game = QuizGame(DEFAULT_QUIZZES)
+    quiz_game.load_state()
 
     while True:
         show_menu()
@@ -35,16 +36,19 @@ def main():
             elif choice == 1:
                 quiz_game.play_quiz()
             elif choice == 2:
-                quiz_game.add_quiz()  
+                quiz_game.add_quiz()
+                quiz_game.save_state() 
             elif choice == 3:
                 quiz_game.list_quizzes()
             elif choice == 5:
+                quiz_game.save_state()
                 print("프로그램을 종료합니다.")
                 break
             else:
                 print(f"{choice}번 기능은 아직 준비 중입니다.")
 
         except (KeyboardInterrupt, EOFError):
+            quiz_game.save_state()
             print("\n안전하게 종료합니다.")
             break
 

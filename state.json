@@ -1,0 +1,65 @@
+{
+  "quizzes": [
+    {
+      "question": "Python에서 화면에 글자를 출력할 때 사용하는 함수는?",
+      "choices": [
+        "input",
+        "print",
+        "range",
+        "type"
+      ],
+      "answer": 2
+    },
+    {
+      "question": "문자열 자료형을 나타내는 것은?",
+      "choices": [
+        "int",
+        "str",
+        "bool",
+        "list"
+      ],
+      "answer": 2
+    },
+    {
+      "question": "조건에 따라 다른 동작을 실행할 때 사용하는 문법은?",
+      "choices": [
+        "for",
+        "if",
+        "def",
+        "import"
+      ],
+      "answer": 2
+    },
+    {
+      "question": "반복 작업을 처리할 때 사용하는 문법은?",
+      "choices": [
+        "if",
+        "class",
+        "for",
+        "return"
+      ],
+      "answer": 3
+    },
+    {
+      "question": "함수를 정의할 때 사용하는 키워드는?",
+      "choices": [
+        "make",
+        "function",
+        "def",
+        "create"
+      ],
+      "answer": 3
+    },
+    {
+      "question": "python의 확장자는?",
+      "choices": [
+        ".yaml",
+        ".txt",
+        ".html",
+        ".py"
+      ],
+      "answer": 4
+    }
+  ],
+  "best_score": 0
+}
