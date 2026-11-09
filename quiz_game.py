@@ -3,9 +3,10 @@ from pathlib import Path
 from quiz import Quiz
 class QuizGame:
     def __init__(self, quizzes):
-        self.quizzes = quizzes
-        self.best_score = 0
-        self.state_file = Path("state.json")
+     self.quizzes = quizzes
+     self.best_score = 0
+     self.has_played = False
+     self.state_file = Path("state.json")
 
     def play_quiz(self):
         if not self.quizzes:
@@ -44,6 +45,14 @@ class QuizGame:
                 print(f"오답입니다. 정답은 {quiz.answer}번입니다.")
 
         print(f"\n퀴즈가 끝났습니다. 점수: {score}/{len(self.quizzes)}")
+        self.has_played = True
+
+        if score > self.best_score:
+            self.best_score = score
+            print("최고 점수를 갱신했습니다.")
+
+        self.save_state()
+
            
     def add_quiz(self):
         print("\n===== 퀴즈 추가 =====")
@@ -94,9 +103,10 @@ class QuizGame:
 
     def save_state(self):
         data = {
-            "quizzes": [quiz.to_dict() for quiz in self.quizzes],
-            "best_score": self.best_score
-        }
+    "quizzes": [quiz.to_dict() for quiz in self.quizzes],
+    "best_score": self.best_score,
+    "has_played": self.has_played
+}
 
         try:
             with open(self.state_file, "w", encoding="utf-8") as file:
@@ -120,8 +130,23 @@ class QuizGame:
                 for item in data["quizzes"]
             ]
             self.best_score = data.get("best_score", 0)
+            self.has_played = data.get("has_played", False)
 
             print("저장된 데이터를 불러왔습니다.")
 
         except (OSError, json.JSONDecodeError, KeyError, TypeError):
             print("state.json이 손상되어 기본 데이터를 사용합니다.")            
+
+            self.has_played = True
+
+       
+
+        self.save_state()
+
+    def show_score(self):
+        print("\n===== 점수 확인 =====")
+
+        if not self.has_played:
+            print("아직 퀴즈를 풀지 않았습니다.")
+        else:
+            print(f"최고 점수: {self.best_score}/{len(self.quizzes)}")

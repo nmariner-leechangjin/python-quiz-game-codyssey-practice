@@ -40,6 +40,8 @@ def main():
                 quiz_game.save_state() 
             elif choice == 3:
                 quiz_game.list_quizzes()
+            elif choice == 4:
+                quiz_game.show_score()    
             elif choice == 5:
                 quiz_game.save_state()
                 print("프로그램을 종료합니다.")
@@ -51,7 +53,5 @@ def main():
             quiz_game.save_state()
             print("\n안전하게 종료합니다.")
             break
-
-
 if __name__ == "__main__":
     main()
