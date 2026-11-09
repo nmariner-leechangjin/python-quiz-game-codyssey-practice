@@ -34,6 +34,8 @@ def main():
                 print("1에서 5 사이의 숫자를 입력하세요.")
             elif choice == 1:
                 quiz_game.play_quiz()
+            elif choice == 2:
+                quiz_game.add_quiz()  
             elif choice == 5:
                 print("프로그램을 종료합니다.")
                 break

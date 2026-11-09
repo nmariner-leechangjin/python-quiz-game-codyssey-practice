@@ -1,3 +1,4 @@
+from quiz import Quiz
 class QuizGame:
     def __init__(self, quizzes):
         self.quizzes = quizzes
@@ -39,3 +40,40 @@ class QuizGame:
                 print(f"오답입니다. 정답은 {quiz.answer}번입니다.")
 
         print(f"\n퀴즈가 끝났습니다. 점수: {score}/{len(self.quizzes)}")
+           
+    def add_quiz(self):
+        print("\n===== 퀴즈 추가 =====")
+
+        while True:
+            question = input("문제를 입력하세요: ").strip()
+
+            if question:
+                break
+
+            print("문제를 입력해야 합니다.")
+
+        choices = []
+
+        for number in range(1, 5):
+            while True:
+                choice = input(f"{number}번 선택지를 입력하세요: ").strip()
+
+                if choice:
+                    choices.append(choice)
+                    break
+
+                print("선택지를 입력해야 합니다.")
+
+        while True:
+            answer = input("정답 번호를 입력하세요(1~4): ").strip()
+
+            if answer.isdigit() and 1 <= int(answer) <= 4:
+                answer = int(answer)
+                break
+
+            print("1에서 4 사이의 숫자를 입력하세요.")
+
+        new_quiz = Quiz(question, choices, answer)
+        self.quizzes.append(new_quiz)
+
+        print("퀴즈가 추가되었습니다.")
